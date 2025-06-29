@@ -2,7 +2,7 @@ import type { TelegramClient, Message } from '@mtcute/bun';
 import { Dispatcher } from '@mtcute/dispatcher';
 import type { ToolInfo } from './index.js';
 
-// Store active wait contexts
+// Store active wait contexts - key can be either chat ID or username
 const activeWaits = new Map<string, {
   resolve: (msg: Message) => void;
   reject: (err: Error) => void;
@@ -54,27 +54,42 @@ export function setupMessageListener(client: TelegramClient) {
       return;
     }
     
-    console.error(`New message: ${msg.text}, from ${msg.sender.username} chatId: ${msg.chat.id}`);
-    // Only process incoming messages
-    const chatId = String(msg.chat.id);
-    const waitContext = activeWaits.get(chatId);
+    // Build array of possible keys to check
+    const possibleKeys: string[] = [
+      String(msg.chat.id), // Chat ID
+    ];
+    
+    if (msg.chat.username) {
+      possibleKeys.push(msg.chat.username); // Username without @
+      possibleKeys.push(`@${msg.chat.username}`); // Username with @
+    }
+    
+    // Find the first matching wait context
+    let waitContext;
+    for (const key of possibleKeys) {
+      waitContext = activeWaits.get(key);
+      if (waitContext) break;
+    }
     
     if (waitContext) {
       // Clear the timeout and resolve the promise
       clearTimeout(waitContext.timeout);
-      activeWaits.delete(chatId);
+      
+      // Delete all possible keys
+      for (const key of possibleKeys) {
+        activeWaits.delete(key);
+      }
+      
       waitContext.resolve(msg);
     }
   });
 }
 
-async function waitForReply(client: TelegramClient, args: any) {
+async function waitForReply(_client: TelegramClient, args: any) {
   const { chatId, timeoutSeconds = 60 } = args;
   const timeoutMs = Math.min(timeoutSeconds * 1000, 300000); // Max 5 minutes
   
   // Use the provided chatId directly as string for the map key
-  const numericChatId = Number(chatId);
-  const resolvedChatId = Number.isNaN(numericChatId) ? chatId : numericChatId;
   const chatIdStr = String(chatId);
   
   try {
