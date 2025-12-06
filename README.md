@@ -17,7 +17,7 @@ A Model Context Protocol (MCP) server for interacting with Telegram using mtcute
 
 #### Option 1: Download Pre-built Binary
 
-Download the latest release for your platform from the [releases page](https://github.com/yourusername/telegram-mcp/releases):
+Download the latest release for your platform from the [releases page](https://github.com/zhigang1992/telegram-mcp/releases):
 
 - **macOS (Apple Silicon)**: `telegram-mcp-darwin-arm64.tar.gz`
 - **macOS (Intel)**: `telegram-mcp-darwin-x64.tar.gz`
@@ -34,7 +34,7 @@ chmod +x telegram-mcp
 
 1. Clone the repository and install dependencies:
    ```bash
-   git clone https://github.com/yourusername/telegram-mcp.git
+   git clone git@github.com:zhigang1992/telegram-mcp.git
    cd telegram-mcp
    bun install
    ```
