@@ -1,8 +1,26 @@
 {
-    "name": "telegram-mcp",
+    "name": "@zhigang1992/telegram-mcp",
     "license": "MIT",
     "version": "1.0.1",
     "type": "module",
+    "description": "Telegram MCP server for interacting with Telegram via the Model Context Protocol",
+    "keywords": ["telegram", "mcp", "model-context-protocol", "ai", "chatbot"],
+    "author": "zhigang1992",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/zhigang1992/telegram-mcp.git"
+    },
+    "bugs": {
+        "url": "https://github.com/zhigang1992/telegram-mcp/issues"
+    },
+    "homepage": "https://github.com/zhigang1992/telegram-mcp#readme",
+    "bin": {
+        "telegram-mcp": "./src/main.ts"
+    },
+    "files": [
+        "src",
+        "README.md"
+    ],
     "packageManager": "bun@1.2.16",
     "scripts": {
         "dev": "bun --watch ./src/main.ts",

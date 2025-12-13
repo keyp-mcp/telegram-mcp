@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import { TelegramServer } from './server/telegram-server.js';
 
 async function main() {
