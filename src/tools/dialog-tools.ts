@@ -13,6 +13,11 @@ export const dialogTools: ToolInfo[] = [
           description: 'Maximum number of dialogs to return (default: 50)',
           default: 50,
         },
+        archived: {
+          type: 'boolean',
+          description: 'Include archived chats (default: true)',
+          default: true,
+        },
         filter: {
           type: 'object',
           description: 'Filter options',
@@ -44,6 +49,11 @@ export const dialogTools: ToolInfo[] = [
           type: 'string',
           description: 'Chat/User ID or username',
         },
+        archived: {
+          type: 'boolean',
+          description: 'Include archived chats when searching (default: true)',
+          default: true,
+        },
       },
       required: ['chatId'],
     },
@@ -66,13 +76,13 @@ export async function handleDialogTools(
 }
 
 async function listDialogs(client: TelegramClient, args: any) {
-  const { limit = 50, filter = {} } = args;
-  
+  const { limit = 50, archived = true, filter = {} } = args;
+
   try {
     const dialogs: Dialog[] = [];
     let count = 0;
 
-    for await (const dialog of client.iterDialogs()) {
+    for await (const dialog of client.iterDialogs({ archived: archived ? 'keep' : 'exclude' })) {
       if (count >= limit) break;
 
       // Apply filters
@@ -109,15 +119,15 @@ async function listDialogs(client: TelegramClient, args: any) {
 }
 
 async function getDialogInfo(client: TelegramClient, args: any) {
-  const { chatId } = args;
-  
+  const { chatId, archived = true } = args;
+
   try {
     // Find the dialog first
     let dialog: Dialog | null = null;
     const numericChatId = Number(chatId);
     const searchId = Number.isNaN(numericChatId) ? chatId : numericChatId;
-    
-    for await (const d of client.iterDialogs()) {
+
+    for await (const d of client.iterDialogs({ archived: archived ? 'keep' : 'exclude' })) {
       if (d.peer.id === searchId || d.peer.username === chatId) {
         dialog = d;
         break;

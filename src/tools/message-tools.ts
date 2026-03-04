@@ -92,6 +92,11 @@ export const messageTools: ToolInfo[] = [
           description: 'Number of messages per chat (default: 10)',
           default: 10,
         },
+        archived: {
+          type: 'boolean',
+          description: 'Include archived chats (default: true)',
+          default: true,
+        },
       },
     },
   },
@@ -291,8 +296,8 @@ async function searchMessages(client: TelegramClient, args: any) {
 }
 
 async function getRecentMessages(client: TelegramClient, args: any) {
-  const { limit = 10, messagesPerChat = 10 } = args;
-  
+  const { limit = 10, messagesPerChat = 10, archived = true } = args;
+
   try {
     const recentChats: Array<{
       dialog: any;
@@ -300,7 +305,7 @@ async function getRecentMessages(client: TelegramClient, args: any) {
     }> = [];
 
     let count = 0;
-    for await (const dialog of client.iterDialogs()) {
+    for await (const dialog of client.iterDialogs({ archived: archived ? 'keep' : 'exclude' })) {
       if (count >= limit) break;
       
       const messages = await client.getHistory(dialog.peer, {
