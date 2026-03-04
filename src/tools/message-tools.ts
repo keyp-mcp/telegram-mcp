@@ -188,12 +188,13 @@ async function getMessageHistory(client: TelegramClient, args: any) {
       for (const msg of messages) {
         if (msg.media && supportedMediaTypes.includes(msg.media.type)) {
           try {
+            const media = msg.media as any;
             // Download media
-            const buffer = await client.downloadAsBuffer(msg.media);
+            const buffer = await client.downloadAsBuffer(media);
 
             // Save to temp file
             const tempDir = os.tmpdir();
-            const ext = getFileExtension(msg.media);
+            const ext = getFileExtension(media);
             const fileName = `tg-${msg.chat.id}-${msg.id}.${ext}`;
             const filePath = path.join(tempDir, fileName);
 
@@ -203,23 +204,23 @@ async function getMessageHistory(client: TelegramClient, args: any) {
             const result: any = {
               messageId: msg.id,
               chatId: msg.chat.id,
-              mediaType: msg.media.type,
+              mediaType: media.type,
               localPath: filePath,
               fileSize: formatFileSize(buffer.length),
             };
 
             // Add optional metadata
-            if (msg.media.fileName) {
-              result.originalFileName = msg.media.fileName;
+            if (media.fileName) {
+              result.originalFileName = media.fileName;
             }
-            if (msg.media.duration) {
-              result.duration = msg.media.duration;
+            if (media.duration) {
+              result.duration = media.duration;
             }
-            if (msg.media.width && msg.media.height) {
-              result.dimensions = `${msg.media.width}x${msg.media.height}`;
+            if (media.width && media.height) {
+              result.dimensions = `${media.width}x${media.height}`;
             }
-            if (msg.media.mimeType) {
-              result.mimeType = msg.media.mimeType;
+            if (media.mimeType) {
+              result.mimeType = media.mimeType;
             }
 
             content.push({
