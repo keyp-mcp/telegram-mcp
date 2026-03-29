@@ -20,7 +20,7 @@ export class TelegramServer {
     this.server = new Server(
       {
         name: 'telegram-mcp',
-        version: '1.0.1',
+        version: '1.0.4',
       },
       {
         capabilities: {
