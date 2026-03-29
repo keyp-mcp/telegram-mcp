@@ -87,8 +87,8 @@ async function listDialogs(client: TelegramClient, args: any) {
 
       // Apply filters
       if (filter.onlyUsers && dialog.peer.type !== 'user') continue;
-      if (filter.onlyGroups && dialog.peer.type !== 'chat') continue;
-      if (filter.onlyChannels && dialog.peer.type !== 'chat') continue;
+      if (filter.onlyGroups && (dialog.peer.type !== 'chat' || dialog.peer.chatType === 'channel')) continue;
+      if (filter.onlyChannels && (dialog.peer.type !== 'chat' || dialog.peer.chatType !== 'channel')) continue;
 
       dialogs.push(dialog);
       count++;

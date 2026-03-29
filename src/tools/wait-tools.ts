@@ -147,11 +147,13 @@ function formatMessage(msg: Message) {
     id: msg.id,
     date: msg.date,
     text: msg.text,
+    textMarkdown: msg.text,
     senderId: msg.sender.id,
     senderName: msg.sender.displayName || msg.sender.username || `User ${msg.sender.id}`,
     senderUsername: msg.sender.username,
     isOutgoing: msg.isOutgoing,
     chatId: msg.chat.id,
     chatName: msg.chat.displayName || msg.chat.username || `Chat ${msg.chat.id}`,
+    media: msg.media ? { type: msg.media.type } : null,
   };
 }
